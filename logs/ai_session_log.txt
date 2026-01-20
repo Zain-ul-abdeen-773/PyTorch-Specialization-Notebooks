@@ -1,0 +1,358 @@
+----------------------------------------
+Question:
+PyTorch Quiz - 10 Multiple Choice Questions on Loss Functions, Activation Functions, Epochs, Tensors, and Broadcasting
+
+Solution:
+Q1: The error between predictions and actual values
+Q2: To enable the network to learn non-linear patterns
+Q3: One complete pass through the entire training dataset
+Q4: Calculates gradients to reduce the loss
+Q5: The type of numbers stored in the tensor
+Q6: tensor([7., 7., 7.])
+Q7: To each element in the tensor
+Q8: Tensors are optimized for mathematical operations
+Q9: torch.Size([])
+Q10: Expanding tensors to compatible shapes for operations
+
+Reasoning:
+Q1: Loss function quantifies the difference (error) between model predictions and ground truth labels.
+Q2: Without non-linear activations, stacking linear layers results in just another linear transformation; ReLU introduces non-linearity enabling complex pattern learning.
+Q3: An epoch = one full iteration over the entire training dataset.
+Q4: loss.backward() performs backpropagation, computing gradients of the loss w.r.t. all parameters with requires_grad=True.
+Q5: dtype specifies the data type (float32, float64, int, etc.) of tensor elements.
+Q6: Element-wise: [2/1, 4/2, 6/3] = [2,2,2], then [2+5, 2+5, 2+5] = [7,7,7].
+Q7: PyTorch operations are element-wise by default (vectorized operations).
+Q8: Tensors leverage GPU acceleration and optimized C++/CUDA backends for fast math ops.
+Q9: Shape [1] -> unsqueeze(0) -> [1,1] -> squeeze() removes ALL size-1 dimensions -> [] (0-dim scalar tensor).
+Q10: Broadcasting automatically expands smaller tensors to match larger tensor shapes for compatible operations.
+
+----------------------------------------
+
+----------------------------------------
+Question:
+PyTorch Quiz 2 - 10 MCQs on Data Normalization, Model Evaluation, MSE Loss, GPU Setup, Flatten Layer, Optimizers, DataLoader Shuffling, no_grad, and model.eval()
+
+Solution:
+Q1: To help the model train more effectively
+Q2: Using model() handles PyTorch's internal setup properly
+Q3: To prevent cancellation and penalize larger errors
+Q4: To see if the model learned generalizable patterns
+Q5: device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+Q6: To reshape 2D images into 1D vectors
+Q7: Adam
+Q8: Training needs varied batches, but test order doesn't affect accuracy
+Q9: To disable gradient tracking and save memory
+Q10: To change how certain layers behave during evaluation
+
+Reasoning:
+Q1: Normalized data (mean~0, std~1) improves gradient flow, prevents vanishing/exploding gradients, and speeds convergence.
+Q2: model() invokes __call__() which runs registered hooks, handles nested modules, and calls forward() internally—direct forward() skips this.
+Q3: Squaring ensures all errors are positive (no cancellation of +/-) and disproportionately penalizes larger errors (quadratic penalty).
+Q4: Test set measures generalization to unseen data; training accuracy alone can mask overfitting.
+Q5: Standard PyTorch idiom: checks CUDA availability, falls back to CPU. Other options have incorrect syntax.
+Q6: Linear layers expect 1D input; MNIST images are 28×28 (2D), so Flatten converts [batch, 1, 28, 28] → [batch, 784].
+Q7: Adam combines momentum + adaptive learning rates, works well across diverse problems without much tuning.
+Q8: Shuffling training data prevents learning order-dependent patterns; test order doesn't affect metric computation.
+Q9: torch.no_grad() disables autograd gradient computation, reducing memory usage and speeding up inference.
+Q10: model.eval() switches layers like Dropout (disabled) and BatchNorm (uses running stats) to evaluation behavior.
+
+----------------------------------------
+
+----------------------------------------
+Question:
+PyTorch Quiz 3 - 10 MCQs on Data Pipelines, Custom Datasets, DataLoader, Transforms, and Data Augmentation
+
+Solution:
+Q1: They handled and prepared the data differently
+Q2: Efficiency problems
+Q3: Loading all images at once would use too much memory
+Q4: In the init method by subtracting 1 from all labels
+Q5: It spreads pixel values for better learning
+Q6: Normalizes pixel values using mean and standard deviation
+Q7: The entire file is read for every sample
+Q8: A batch of images and a batch of labels
+Q9: Validation needs consistent data to measure improvements
+Q10: It logs the error and retrieves another image
+
+Reasoning:
+Q1: Data preparation (preprocessing, augmentation, splitting) has huge impact on model performance, even with identical architectures.
+Q2: Loading data in batches rather than one at a time is an efficiency optimization to speed up training.
+Q3: Storing paths in __init__ and loading images lazily in __getitem__ prevents memory overflow with large datasets.
+Q4: Fix indexing in __init__ by subtracting 1 from all labels once, rather than in __getitem__ which runs thousands of times during training.
+Q5: Normalize centers data around 0 with unit variance, spreading values for better gradient-based optimization.
+Q6: ToTensor() does: PIL→tensor, scales 0-255→0-1, rearranges to [C,H,W]. Mean/std normalization is a separate Normalize() transform.
+Q7: Reading from a large file in __getitem__ may re-read/re-parse the entire file for each sample access—extremely inefficient.
+Q8: DataLoader returns batched tensors: a batch of inputs and a batch of corresponding labels together.
+Q9: Augmentation adds randomness; validation data should be consistent across epochs to reliably measure model improvement.
+Q10: A robust implementation catches exceptions and returns a different valid sample to keep training going without crashing.
+
+----------------------------------------
+----------------------------------------
+Question:
+PyTorch Quiz 4 - 10 MCQs on CNNs, Convolutional Layers, Pooling, nn.Module, nn.Sequential, and Model Inspection
+
+Solution:
+Q1: The model discovers task-specific patterns automatically
+Q2: Multiply corresponding values, sum the products, then average
+Q3: 7×7
+Q4: The layer learns 32 different filters
+Q5: Sequential doesn't support conditionals, loops, or branching
+Q6: Static graphs are defined once before training, while dynamic graphs are built fresh each time data flows through
+Q7: init defines the architecture, forward defines data flow
+Q8: You don't need to manually call each layer in forward
+Q9: sum(p.numel() for p in model.parameters())
+Q10: children() shows top-level components, modules() shows everything
+
+Reasoning:
+Q1: Learned filters adapt to the specific task, automatically discovering optimal patterns for that dataset rather than relying on generic hand-designed features.
+Q2: Convolution operation: element-wise multiply filter values with corresponding pixel values, then sum the products (some include averaging).
+Q3: 28×28 → MaxPool(kernel=2) → 14×14 → MaxPool(kernel=2) → 7×7. Each pooling halves spatial dimensions.
+Q4: out_channels=32 means the layer learns 32 separate filters, each producing one output feature map.
+Q5: nn.Sequential is a simple linear stack of layers; for conditionals, loops, or branching architectures, must subclass nn.Module.
+Q6: PyTorch uses dynamic graphs rebuilt on each forward pass, unlike static graphs (TensorFlow 1.x) defined once before execution.
+Q7: __init__ creates and initializes layers (architecture), forward() defines how input data flows through those layers.
+Q8: nn.Sequential automatically chains layer calls in order, so you just call the sequential block instead of each layer manually.
+Q9: model.parameters() returns iterator of tensors; p.numel() gives element count per tensor; sum gives total parameters.
+Q10: children() returns only direct child modules; modules() recursively returns all nested modules including the model itself.
+
+----------------------------------------
+
+----------------------------------------
+Question:
+PyTorch Quiz 5 - 10 MCQs on Optuna Hyperparameter Optimization, Flexible CNN Architecture, Parameter Importance, and Model Selection
+
+Solution:
+Q1: It supports flexible experimentation by testing multiple architectural designs
+Q2: False
+Q3: dropout_rate = trial.suggest_float("dropout_rate", 0.1, 0.5)
+Q4: Structure the search space to reflect dependencies between architectural components
+Q5: To ensure your model meets real-world constraints like speed and memory
+Q6: Because x.size(1) gives the dynamic flattened feature size, which depends on earlier layers
+Q7: You can determine which hyperparameters had the most influence on the optimization objective and prioritize them in future searches
+Q8: It highlights optimal combinations of hyperparameter values using color intensity
+Q9: To serve as a reference point against which performance improvements can be measured
+Q10: C
+
+Reasoning:
+Q1: Parameterizing architecture allows Optuna to systematically explore different configurations (layers, sizes, dropout) for flexible experimentation.
+Q2: Dropout is regularization (prevents overfitting). Learning rate is an OPTIMIZATION hyperparameter, not regularization.
+Q3: suggest_float() is for continuous float ranges; suggest_categorical would only give discrete predefined values.
+Q4: Best practice: only define hyperparameters for components that exist in that trial configuration (conditional search space).
+Q5: Real-world deployment has practical constraints (latency, memory, edge devices) beyond just accuracy metrics.
+Q6: Classifier input size depends on dynamic architecture (number of conv layers, kernel sizes, pooling), only known after forward pass computes flattened features.
+Q7: Parameter importance analysis reveals which hyperparameters most influence the objective, helping prioritize future search efforts.
+Q8: Parallel coordinate plots show lines connecting hyperparameter values across axes, with color intensity indicating performance quality.
+Q9: A baseline model provides a reference point to quantify whether optimized models actually improve performance.
+Q10: Score calculation: A=0.67, B=0.69, C=0.72, D=0.655. Model C has highest composite score.
+
+----------------------------------------
+
+----------------------------------------
+Question:
+PyTorch Quiz 6 - 10 MCQs on TorchVision, PIL, Transfer Learning, Image Transforms, Pretrained Models, and Semantic Segmentation
+
+Solution:
+Q1: They offer optimized tools, datasets, and pretrained models tailored for vision workflows
+Q2: PIL (Pillow)
+Q3: To leverage knowledge gained from pre-training on large datasets
+Q4: It returns a new image tensor with boxes and labels drawn
+Q5: To introduce random cropping along with random resizing, simulating scale variation
+Q6: To ensure the image is large enough to safely crop to the target size
+Q7: Immediately after converting to a tensor with ToTensor()
+Q8: A per-pixel tensor indicating predicted class for each pixel
+Q9: transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+Q10: It adds a batch dimension so the input shape is [1, C, H, W]
+
+Reasoning:
+Q1: Domain-specific libraries like TorchVision provide specialized, optimized tools (transforms, datasets, pretrained models) for vision tasks.
+Q2: TorchVision relies on PIL (Pillow) for image I/O and manipulation before converting images to tensors.
+Q3: Transfer learning leverages pretrained weights from large datasets (ImageNet) to jumpstart learning on new tasks with less data.
+Q4: draw_bounding_boxes() returns a NEW tensor with boxes/labels drawn; it doesn't modify in-place, run detection, or save to disk.
+Q5: RandomResizedCrop applies random scale changes AND random cropping, simulating objects appearing at different sizes/distances.
+Q6: Resize ensures image dimensions are >= crop size; cropping an image smaller than target size would fail.
+Q7: Normalize requires tensor input (operates on float tensors), so must come after ToTensor() in the transform pipeline.
+Q8: DeepLabV3 is a semantic segmentation model outputting per-pixel class predictions (not bounding boxes or single class).
+Q9: Pretrained models expect ImageNet normalization: mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225].
+Q10: Models expect 4D input [batch, channels, height, width]; unsqueeze(0) adds batch dim to single image [C,H,W] → [1,C,H,W].
+
+----------------------------------------
+
+----------------------------------------
+Question:
+PyTorch Quiz 7 - 10 MCQs on NLP Preprocessing, Tokenization, Embeddings, BERT, Padding, OOV Handling, and NER
+
+Solution:
+Q1: To reduce vocabulary size by treating "Word" and "word" as the same token
+Q2: It automatically pools embeddings across tokens
+Q3: To ensure all sequences in a batch are the same length
+Q4: To prevent updates and retain pretrained representations
+Q5: Converting tokens into strings
+Q6: Replacing OOV words with a special token and utilizing word embeddings like subword tokenization or character-level modeling
+Q7: It outputs PyTorch tensors with padded/truncated input_ids and attention_mask
+Q8: It encodes word indices into dense vectors that can capture semantic similarity
+Q9: A process that identifies and classifies key elements from text into predefined categories such as names of people, organizations, locations, etc.
+Q10: Vocabulary Size
+
+Reasoning:
+Q1: Lowercasing merges "Word", "WORD", "word" into single token, reducing vocabulary size and sparsity.
+Q2: nn.EmbeddingBag computes sum/mean of embeddings in one efficient operation, vs separate embedding + pooling steps.
+Q3: Batched tensor operations require uniform dimensions; padding ensures all sequences have same length for batch processing.
+Q4: Freezing embedding weights prevents gradient updates, preserving learned semantic knowledge from large-scale pretraining.
+Q5: Preprocessing converts strings TO tokens/IDs for model input; converting tokens to strings is the reverse (decoding output).
+Q6: Subword tokenization (BPE, WordPiece) handles OOV by breaking unknown words into known subword units; UNK token as fallback.
+Q7: BERT tokenizer with those args returns dict with input_ids and attention_mask as PyTorch tensors, padded/truncated appropriately.
+Q8: nn.Embedding maps discrete token indices to continuous dense vectors in semantic space where similar words are closer.
+Q9: NER (Named Entity Recognition) identifies and classifies entities: PERSON, ORGANIZATION, LOCATION, DATE, etc.
+Q10: Vocabulary coverage is critical for pretrained embeddings; domain mismatch leads to high OOV rates and poor performance.
+
+----------------------------------------
+
+----------------------------------------
+Question:
+PyTorch Quiz 8 - 10 MCQs on DataLoader Optimization, Pinned Memory, Prefetch Factor, Profiler, Mixed Precision, Gradient Accumulation, and PyTorch Lightning
+
+Solution:
+Q1: Find a balance that maximizes GPU efficiency while fitting within memory constraints
+Q2: A special region of RAM that stays fixed in place, allowing faster GPU data transfer
+Q3: How many batches each worker preloads into memory ahead of time
+Q4: 2
+Q5: Make models train faster and more efficiently without sacrificing accuracy
+Q6: Which operations are consuming the most time during training?
+Q7: Wait 2 batches with the profiler inactive, warm up for 2 batches with the profiler active, then record performance data for 10 batches
+Q8: Lower memory usage and faster computation while maintaining stability
+Q9: It accumulates gradients over multiple smaller batches before performing an optimizer step
+Q10: Lightning forces a clean separation between model logic and training infrastructure
+
+Reasoning:
+Q1: Batch size optimization balances GPU utilization (larger=better) against memory limits (too large=OOM). Find the sweet spot.
+Q2: Pinned (page-locked) memory stays fixed in RAM, enabling faster DMA transfers to GPU without paging overhead.
+Q3: prefetch_factor controls how many batches each DataLoader worker prepares ahead of training consumption.
+Q4: PyTorch DataLoader default prefetch_factor is 2 (each worker preloads 2 batches ahead).
+Q5: Training optimization aims for faster/more efficient training while maintaining model accuracy and quality.
+Q6: PyTorch Profiler identifies bottlenecks by showing which operations consume most time (CPU/GPU/memory analysis).
+Q7: Profiler schedule operates per-batch: wait=skip batches, warmup=start profiler, active=record detailed traces.
+Q8: Mixed precision (FP16 compute, FP32 master weights) reduces memory footprint and leverages tensor cores for speed.
+Q9: Gradient accumulation sums gradients over N small batches, then updates weights—simulating larger effective batch size.
+Q10: Lightning architecture separates model logic (LightningModule) from training infrastructure (Trainer), improving code organization.
+
+----------------------------------------
+
+----------------------------------------
+Question:
+PyTorch Quiz 9 - 10 MCQs on Advanced Architectures: ModuleList, Dynamic Graphs, Siamese Networks, ResNet Skip Connections, DenseNet Growth Rate, Conditional Execution, and Transition Layers
+
+Solution:
+Q1: The layers won't train or save
+Q2: It builds a fresh computation graph for whichever branch was taken
+Q3: Gradients from both branches update the same shared weights
+Q4: A direct addition of the original input to the block's output
+Q5: How many new channels each dense layer adds
+Q6: Conditional execution
+Q7: It provides a direct path for gradients to flow backward without vanishing
+Q8: self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=1, bias=False)
+Q9: Whenever either stride ≠ 1 or in_channels ≠ out_channels
+Q10: A TransitionLayer with 1×1 convolution to reduce channels
+
+Reasoning:
+Q1: Python lists aren't registered by PyTorch; layers won't be tracked for training, saving, or device transfer. Use nn.ModuleList instead.
+Q2: PyTorch's dynamic computation graph is built on-the-fly during forward pass, only including actually executed operations.
+Q3: Siamese networks share weights between branches; gradients from both forward passes accumulate on the same parameters.
+Q4: Residual/skip connection adds input directly to block output: y = F(x) + x, enabling identity mapping.
+Q5: DenseNet growth rate k specifies how many new feature map channels each dense layer adds to concatenated output.
+Q6: The if-statement selects different network paths at runtime based on input condition—classic conditional execution pattern.
+Q7: Skip connection gradient: ∂L/∂x = ∂L/∂y · (∂F/∂x + 1). The +1 term provides direct gradient path, preventing vanishing gradients.
+Q8: 1×1 conv reduces channels (compression); AvgPool(kernel=2, stride=2) handles 2× spatial downsampling separately.
+Q9: For addition x + F(x), tensor shapes must match. Downsample layer adjusts dimensions when stride≠1 or channels differ.
+Q10: DenseNet TransitionLayers use 1×1 convolution with compression factor (e.g., 0.5) to reduce accumulated channels between blocks.
+
+----------------------------------------
+
+----------------------------------------
+Question:
+PyTorch Quiz 10 - 10 MCQs on Diffusion Models, CNN Receptive Fields, MaxPooling, Grad-CAM, Saliency Maps, and Stable Diffusion
+
+Solution:
+Q1: Noise is added incrementally until the image becomes nearly pure noise
+Q2: Keeps channel count unchanged and halves both spatial dimensions
+Q3: Saliency computes pixel-level gradients; Grad-CAM aggregates over feature map regions
+Q4: It doubles in each spatial dimension because pooling was moved earlier
+Q5: Produce sharper, higher-fidelity images at the cost of longer runtime
+Q6: It tells the model what content to avoid
+Q7: The total noise present in the current image
+Q8: The model's predictions aren't perfect, so one big correction produces poor results
+Q9: Each 3×3 filter covers a larger input region in deeper layers
+Q10: The classifier learned to associate grass patterns with zebra predictions
+
+Reasoning:
+Q1: Forward diffusion adds Gaussian noise incrementally over T timesteps until image becomes approximately N(0,1) pure noise.
+Q2: MaxPool(kernel=2, stride=2) halves height and width; channel count is unaffected by pooling operations.
+Q3: Saliency maps compute gradients w.r.t. input pixels (fine-grained); Grad-CAM uses gradient-weighted conv activations (coarse regions).
+Q4: Pooling before conv means conv operates on downsampled input—each conv output pixel now represents 2× larger original region.
+Q5: More inference steps = finer denoising trajectory = higher quality/sharper images, but proportionally longer generation time.
+Q6: negative_prompt steers generation away from specified content/styles, acting as "what to avoid" guidance.
+Q7: Diffusion models (ε-prediction) predict the total noise ε added to create the noisy image at timestep t.
+Q8: Single-step denoising amplifies prediction errors catastrophically; iterative small steps allow error correction.
+Q9: Receptive field grows with network depth—deeper 3×3 filters effectively "see" much larger regions of original input.
+Q10: Spurious correlation: model learned dataset bias where zebras co-occur with grass, so grass activates zebra prediction.
+
+----------------------------------------
+
+----------------------------------------
+Question:
+PyTorch Quiz 11 - 10 MCQs on Transformer Architecture: Encoder-only, Decoder-only, Encoder-Decoder, Attention Mechanism (Q/K/V), MultiheadAttention, Causal Masking, and Cross-Attention
+
+Solution:
+Q1: Encoder-only, because encoders are designed for understanding tasks
+Q2: Q represents what this token searches for, K represents how this token appears to others, V represents the information this token provides
+Q3: Dot product of queries and keys, scale the result, then apply softmax
+Q4: Pass the same input three times for Q, K, and V
+Q5: The dimensionality of the token embeddings
+Q6: Set is_causal=True or pass a causal mask
+Q7: Reuse nn.TransformerEncoderLayer or nn.TransformerEncoder and pass a causal mask
+Q8: Use queries from the decoder to attend to keys and values from the encoder
+Q9: The encoder's output representation of the source sequence
+Q10: Decoder layers have two attention blocks while encoder layers have only one
+
+Reasoning:
+Q1: Encoder-only (BERT-style) is for understanding tasks like classification; decoder-only (GPT) for generation; encoder-decoder for seq2seq.
+Q2: Query="what am I looking for?", Key="what do I contain/how do I appear?", Value="what information do I provide when matched?"
+Q3: Attention formula: softmax(QK^T / √d_k) · V — dot product Q·K, scale by √d_k, softmax for weights, multiply by V.
+Q4: Self-attention: pass same input x for Q, K, V → attn(x, x, x). The layer's learned projections create different Q/K/V.
+Q5: d_model is the embedding/hidden dimension (e.g., 512, 768) — the core dimensionality throughout the transformer.
+Q6: Causal masking in PyTorch: use is_causal=True parameter or pass explicit upper-triangular mask to prevent future attention.
+Q7: Decoder-only models (GPT) can be built using TransformerEncoderLayer + causal mask — no cross-attention needed.
+Q8: Cross-attention: queries from decoder attend to keys/values from encoder output, allowing decoder to "look at" source sequence.
+Q9: memory parameter = encoder output, passed to decoder for cross-attention to source sequence representation.
+Q10: Encoder: 1 self-attention + FFN. Decoder: 1 masked self-attention + 1 cross-attention + FFN = 2 attention blocks.
+
+----------------------------------------
+
+----------------------------------------
+Question:
+PyTorch Quiz 12 - 10 MCQs on Model Saving, Checkpoints, ONNX Export, Pruning (Structured/Unstructured), and Quantization (Dynamic/Static/QAT)
+
+Solution:
+Q1: {"model_state_dict", "optimizer_state_dict", "epoch", "loss"}
+Q2: Trained models only exist in RAM
+Q3: ONNX needs to know the shape of the input your model expects
+Q4: Precomputes constant calculations and stores the results
+Q5: Structured pruning removes whole neurons/filters
+Q6: 50% of the outputs, selected by importance
+Q7: Training accumulates small gradient updates where precision loss compounds, but fixed trained weights tolerate rounding
+Q8: Dynamic for RNNs and transformers with large linear layers, static for CNNs where convolutions need quantization
+Q9: Quantizes the value to int8 then immediately dequantizes it back to float32
+Q10: Fusing lets quantization see the full transformation and set appropriate output ranges
+
+Reasoning:
+Q1: Resume training requires: model weights, optimizer state (momentum/Adam buffers), epoch number, and loss for progress tracking.
+Q2: PyTorch models exist only in RAM during execution; without explicit saving, they're lost when Python process terminates.
+Q3: ONNX export traces the model with example input to determine tensor shapes and construct the static computation graph.
+Q4: do_constant_folding=True precomputes operations with constant inputs at export time, optimizing the ONNX graph.
+Q5: Structured pruning removes entire structures (neurons, channels, filters); unstructured removes individual weights (creates sparsity).
+Q6: dim=0 targets output dimension (weight matrix rows); ln_structured uses L-n norm to rank and prune by importance, not randomly.
+Q7: Training: small gradient updates compound precision errors. Inference: fixed weights tolerate minor rounding from quantization.
+Q8: Dynamic quantization targets nn.Linear (RNN/Transformer); static quantization supports nn.Conv2d (CNNs) with calibration data.
+Q9: Fake quantization: round to int8 range then immediately convert back to float32—simulates quantization while allowing gradients.
+Q10: Fusing Conv+BN+ReLU lets quantization observe the combined transformation's true output range for better scale/zero-point.
+
+----------------------------------------
